@@ -1,6 +1,6 @@
 # ForgeNeo-GalleryRefreshFix
 
-An extension for [Forge Classic Neo](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo) that fixes the result gallery no longer updating after the webui was restarted while a browser tab stayed open.
+An extension for [Forge Classic Neo](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo) that fixes the result gallery no longer updating after the webui was restarted while a browser tab stayed open. It also includes an optional fix for live preview freezing when many tabs are open (see [Heartbeat blocker](#heartbeat-blocker-live-preview-freezing-with-many-tabs)).
 
 ## The problem
 
@@ -20,6 +20,23 @@ It adds a small script that watches the `/queue/data` stream only. If the stream
 - No Gradio or Forge files are modified.
 - A job that was running at the moment of the restart still shows an error - it really was lost. The next Generate works normally.
 - When it steps in, it logs a `[ForgeNeo-GalleryRefreshFix]` warning in the browser console.
+
+## Heartbeat blocker (live preview freezing with many tabs)
+
+A second, independent fix. With several tabs open, live preview, the step counter and Interrupt stop responding, and new tabs may never finish loading.
+
+Browsers allow only 6 connections per host (`127.0.0.1:7860` and `localhost:7860` count as different hosts). Every open tab keeps one of them permanently for Gradio's `/heartbeat` connection. Once they are all taken, every other request waits in the browser indefinitely.
+
+The heartbeat only tells the server when a tab was closed, so it can run `unload` events and expire `gr.State` values that have a time-to-live. Forge uses neither, and the page never reads the heartbeat's messages. The blocker answers the heartbeat request locally with an empty stream instead of opening a real connection, which frees one slot per tab. The only side effect: the server never learns that a tab was closed and keeps its small session data (Gradio caps this at 10,000 sessions).
+
+When active, it logs a `[ForgeNeo-GalleryRefreshFix] heartbeat connection blocked` message in the browser console.
+
+## Settings
+
+**Settings** > **Gallery Refresh Fix**:
+
+- **Recover the result gallery ...** - the gallery fix, on by default. Takes effect immediately.
+- **Block Gradio's heartbeat connection ...** - the heartbeat blocker, on by default. Takes effect after reloading the browser tab.
 
 ## Installation
 

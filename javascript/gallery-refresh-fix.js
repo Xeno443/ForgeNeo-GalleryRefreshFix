@@ -46,6 +46,15 @@
         }
     }
 
+    // Forge's `opts` global; before the settings are loaded the fix stays on.
+    function fixEnabled() {
+        try {
+            return typeof opts === "undefined" || opts.grf_gallery_fix !== false;
+        } catch (e) {
+            return true;
+        }
+    }
+
     function recoveryResponse() {
         return new Response(RECOVERY_EVENTS, {
             status: 200,
@@ -111,7 +120,7 @@
     }
 
     async function fetchWithGalleryRefreshFix(input, init) {
-        if (!isQueueDataRequest(input, init)) {
+        if (!isQueueDataRequest(input, init) || !fixEnabled()) {
             return originalFetch.apply(window, arguments);
         }
 
