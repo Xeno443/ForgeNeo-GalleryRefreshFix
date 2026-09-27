@@ -15,7 +15,7 @@ def on_ui_settings():
     shared.opts.add_option(
         "grf_block_heartbeat",
         shared.OptionInfo(
-            True,
+            False,
             "Block Gradio's heartbeat connection, freeing browser connection slots for live preview and interrupt when many tabs are open",
             section=section,
         ).info("takes effect after reloading the browser tab"),

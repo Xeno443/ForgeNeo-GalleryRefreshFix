@@ -36,7 +36,7 @@ When active, it logs a `[ForgeNeo-GalleryRefreshFix] heartbeat connection blocke
 **Settings** > **Gallery Refresh Fix**:
 
 - **Recover the result gallery ...** - the gallery fix, on by default. Takes effect immediately.
-- **Block Gradio's heartbeat connection ...** - the heartbeat blocker, on by default. Takes effect after reloading the browser tab.
+- **Block Gradio's heartbeat connection ...** - the heartbeat blocker, off by default. Takes effect after reloading the browser tab.
 
 ## Installation
 

@@ -45,11 +45,12 @@
         });
     }
 
+    // Off unless the setting is explicitly turned on.
     function blockingEnabled() {
         try {
-            return typeof opts === "undefined" || opts.grf_block_heartbeat !== false;
+            return typeof opts !== "undefined" && opts.grf_block_heartbeat === true;
         } catch (e) {
-            return true;
+            return false;
         }
     }
 
